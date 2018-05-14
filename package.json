@@ -1,0 +1,26 @@
+{
+  "name": "reversi",
+  "version": "1.0.0",
+  "description": "game",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsjenniferdu/reversi.git"
+  },
+  "keywords": [
+    "reversi"
+  ],
+  "author": "jenn du",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/itsjenniferdu/reversi/issues"
+  },
+  "homepage": "https://github.com/itsjenniferdu/reversi#readme",
+  "dependencies": {
+    "node-static": "^0.7.10",
+    "socket.io": "^2.1.0"
+  }
+}
