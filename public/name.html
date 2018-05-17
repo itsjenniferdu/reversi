@@ -1,0 +1,35 @@
+under meta name viewport
+(1)<title>Enter your username</title>
+
+(3)
+<script>
+  function submitForm () {
+      var username = $('#username').val();
+      window.location.href = 'lobby.html?username='+username;
+  }
+</script>
+
+
+(2)Under container fluid text center
+<div class="container-fluid text-center">
+  <div class="row" id="header-row">
+    <div class="col">
+     <h2>Enter your username</h2>
+    </div>
+  </div>
+  
+  <div class='row'>
+      <div class="col">
+        <form onsubmit='submitForm()' class='form-inline'>
+            <div class='form-group'>
+              <label for='username' class='col-form-label sr-only'>Enter your username</label>
+              <input class='form-control' type='text' value='' id='username' placeholder='Enter your username'/>
+            </div>
+            <button type='submit' class='btn btn-default btn-primary'>Done</button>
+        </form>
+  
+   </div>
+  </div>
+  
+   
+</div>
