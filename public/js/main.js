@@ -84,7 +84,7 @@ if(dom_elements.length == 0){
 }
 else{
 	var buttonC = makeInviteButton();
-	$('.socket_'+payload.socket_id+' button'.replaceWith(buttonC);
+	$('.socket_'+payload.socket_id+' button'.replaceWith(buttonC));
 		dom_elements.slideDown(1000)
 }
 
