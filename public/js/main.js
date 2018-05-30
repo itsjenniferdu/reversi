@@ -47,7 +47,7 @@ socket.on('join_room_response',function(payload){
 	}
 
 /* if we are being notified that we joined the room, ignore */
-	if(payload.socket_id == socket_id){
+	if(payload.socket_id == socket.id){
 		return;
 	}
 
@@ -70,7 +70,7 @@ if(dom_elements.length == 0){
 	nodeB.addClass('col-9 text-right');
 	nodeB.append('<h4>'+payload.username+'</h4>');
 
-	nodeC.addClass('cold-3 text-left');
+	nodeC.addClass('col-3 text-left');
 	var buttonC = makeInviteButton();
 	nodeC.append(buttonC);
 
@@ -84,18 +84,18 @@ if(dom_elements.length == 0){
 }
 else{
 	var buttonC = makeInviteButton();
-	$('.socket_'+payload.socket_id+' button'.replaceWith(buttonC));
-		dom_elements.slideDown(1000)
+	$('.socket_'+payload.socket_id+' button').replaceWith(buttonC);
+		dom_elements.slideDown(1000);
 }
 
 /* manage message that new player has joined */
 
-	var newHTML = '<p>'+payload.username+' just entered the lobby</p>');
+	var newHTML = '<p> '+payload.username+' just entered the lobby</p>';
 	var newNode = $(newHTML);
 	newNode.hide();
 	$('#messages').append(newNode);
 	newNode.slideDown(1000);
-	};
+	});
 
 /*this gets hidden at 14:48 reversi part 11, setup 01
 	$('#messages').append('<p>New user joined the room: '+payload.username+'</p>');
@@ -115,7 +115,7 @@ socket.on('player_disconnected',function(payload){
 	}
 
 /* if we are being notified that we left the room, ignore */
-	if(payload.socket_id == socket_id){
+	if(payload.socket_id == socket.id){
 		return;
 	}
 
@@ -125,18 +125,15 @@ socket.on('player_disconnected',function(payload){
 /* if something exists */
 if(dom_elements.length != 0){
 	dom_elements.slideUp(1000);
-
 }
 
 /* manage message that a player has left */
-	var newHTML = '<p>'+payload.username+' has left the lobby</p>';
+	var newHTML = '<p>' +payload.username+' has left the lobby</p>';
 	var newNode = $(newHTML);
 	newNode.hide();
 	$('#messages').append(newNode);
 	newNode.slideDown(1000);
 	});
-
-
 
 
 
