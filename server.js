@@ -82,7 +82,7 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('join_room',function(payload){
-		log('\'join_room\' command'+JSON.stringify(payload));
+		log('\'join_room\' command',+JSON.stringify(payload));
 
 		/* check that client sent a payload */
 		if(('undefined' === typeof payload) || !payload){
@@ -172,11 +172,10 @@ io.sockets.on('connection', function(socket) {
 		if('undefined' !== typeof players[socket.id] && players[socket.id]){
 			var username = player[socket.id].username;
 			var room = players[socket.id].room;
-			var payload ={
+			var payload = {
 				username: username,
 				socket_id: socket.id
 				};
-
 				delete players[socket.id];
 				io.in(room).emit('player_disconnected',payload);
 		}
