@@ -115,7 +115,7 @@ socket.on('player_disconnected',function(payload){
 	}
 
 /* if we are being notified that we left the room, ignore */
-	if(payload.socket_id == socket.id){
+	if(payload.socket_id === socket.id){
 		return;
 	}
 
