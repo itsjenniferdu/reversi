@@ -71,7 +71,7 @@ if(dom_elements.length == 0){
 	nodeB.append('<h4>'+payload.username+'</h4>');
 
 	nodeC.addClass('col-3 text-left');
-	var buttonC = makeInviteButton();
+	var buttonC = makeInviteButton(payload.socket_id);
 	nodeC.append(buttonC);
 
 	nodeA.hide();
@@ -83,7 +83,7 @@ if(dom_elements.length == 0){
 	nodeC.slideDown(1000);
 }
 else{
-	var buttonC = makeInviteButton();
+	var buttonC = makeInviteButton(payload.socket_id);
 	$('.socket_'+payload.socket_id+' button').replaceWith(buttonC);
 		dom_elements.slideDown(1000);
 }
@@ -135,6 +135,37 @@ if(dom_elements.length != 0){
 	newNode.slideDown(1000);
 	});
 
+/* send an invite message to the server - invitation capability (lobby pt. 2) */
+
+function invite(who){
+	var payload = {};
+	payload.requested_user = who; 
+	console.log('*** Client Log Message: \'invite\' payload: '+JSON.stringify(payload));
+	socket.emit('invite',payload);
+}
+
+socket.on('invite_response',function(payload){
+	if(payload.result == 'fail'){
+		alert(payload.message);
+		return;
+	}
+	var newNode = makeInvitedButton();
+	$('.socket_'+payload.socket_id+' button').replaceWith(newNode);
+});
+
+
+socket.on('invited',function(payload){
+	if(payload.result == 'fail'){
+		alert(payload.message);
+		return;
+	}
+	var newNode = makePlayButton();
+	$('.socket_'+payload.socket_id+' button').replaceWith(newNode);
+});
+
+
+
+
 
 
 socket.on('send_message_response',function(payload){
@@ -158,9 +189,34 @@ function send_message (){
 }
 
 
-function makeInviteButton(){
+function makeInviteButton(socket_id){
 
 	var newHTML = '<button type=\'button\' class=\'btn btn-outline-primary\'>Invite</button>';
+	var newNode = $(newHTML);
+	newNode.click(function(){
+		invite(socket_id);
+	});
+	return(newNode)
+}
+
+function makeInvitedButton(){
+
+	var newHTML = '<button type=\'button\' class=\'btn btn-primary\'>Invited</button>';
+	var newNode = $(newHTML);
+	return(newNode)
+}
+
+function makePlayButton(){
+
+	var newHTML = '<button type=\'button\' class=\'btn btn-success\'>Play</button>';
+	var newNode = $(newHTML);
+	return(newNode)
+}
+
+
+function makeEngagedButton(){
+
+	var newHTML = '<button type=\'button\' class=\'btn btn-danger\'>Engaged</button>';
 	var newNode = $(newHTML);
 	return(newNode)
 }
