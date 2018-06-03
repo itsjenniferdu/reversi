@@ -18,8 +18,6 @@ var username = getURLParameters('username');
 if('undefined' == typeof username || !username){
 	username = 'Anonymous_'+Math.random();
 }
-$('#messages').append('<h4>'+username+'</h4>');
-
 
 /* one_room to game_id */
 
@@ -118,7 +116,7 @@ socket.on('player_disconnected',function(payload){
 	}
 
 /* if we are being notified that we left the room, ignore */
-	if(payload.socket_id === socket.id){
+	if(payload.socket_id == socket.id){
 		return;
 	}
 
@@ -220,17 +218,6 @@ socket.on('game_start_response',function(payload){
 /*Jump to a new page */
     window.location.href = 'game.html?username='+username+'&game_id='+payload.game_id;
 });
-
-
-function send_message(){
-    var payload = {};
-    payload.room = chat_room;
-    payload.message = $('#send_message_holder').val();
-    console.log('*** Client Log Message: \'send_message\' payload: '+JSON.stringify(payload));
-    socket.emit('send_message',payload);
-}
-
-
 
 
 /* send message response */
