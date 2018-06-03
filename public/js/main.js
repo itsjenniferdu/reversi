@@ -274,6 +274,7 @@ function makeInvitedButton(socket_id){
 	var newNode = $(newHTML);
 	newNode.click(function(){
 		uninvite(socket_id);
+	});
 	return(newNode);
 }
 
@@ -283,6 +284,7 @@ function makePlayButton(socket_id){
 	var newNode = $(newHTML);
 	newNode.click(function(){
 		game_start(socket_id);
+	});
 	return(newNode);
 }
 
