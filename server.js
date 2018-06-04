@@ -518,7 +518,7 @@ io.sockets.on('connection', function(socket){
 
 		/* If everything is ok respond to the game starter that it was successful */
        /*var game_id = Math.floor((1+Math.random()) * 0x10000.toString(16).substring(1)); */
-		var game_id = Math.floor(1+Math.random() * 0x1000.toString(16).substring());
+		var game_id = Math.floor((1+Math.random()) *0x10000).toString(16).substring(1);
 		var success_data = {
 			result: 'success',
 			socket_id: requested_user,
@@ -544,7 +544,7 @@ io.sockets.on('connection', function(socket){
 	/*********************************/
 	/* Code related to game state */
 
-var games = {};
+var games = [];
 
 function create_new_game(){
 	var new_game = {};
