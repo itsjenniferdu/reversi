@@ -337,7 +337,7 @@ socket.on('game_update',function(payload){
 	}
 
 	/* check for a good board in the payload */
-	var baord = payload.game.board;
+	var board = payload.game.board;
 	if('undefined' == typeof board || !board){
 		console.log('internal error received a malformed board update from the server');
 		return;
