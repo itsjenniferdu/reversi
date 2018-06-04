@@ -34,19 +34,19 @@ socket.on('log', function(array){
 
 // What to do when the server responds that someone joined a room
 socket.on('join_room_response', function(payload){ // Join room response
-	if (payload.result === 'fail'){
+	if (payload.result == 'fail'){
 		alert(payload.message);
 		return;
 	}
 	/* If we are being notified that we joined the room, then ignore it */
-	if (payload.socket_id === socket.id) {
+	if(payload.socket_id == socket.id){
 		return;
 	}
 
 	/* If somone joined the new room then add a new row to the lobby table */
 	var dom_elements = $('.socket_'+payload.socket_id);
 	/* If we don't already have an entry for this person */
-	if (dom_elements.length === 0) {
+	if (dom_elements.length == 0){
 		var nodeA = $('<div></div>');
 		nodeA.addClass('socket_'+payload.socket_id);
 
@@ -85,7 +85,7 @@ socket.on('join_room_response', function(payload){ // Join room response
 	var newHTML = '<p>'+payload.username+' just entered the lobby</p>';
 	var newNode = $(newHTML);
 	newNode.hide();
-	$('#messages').append(newNode);
+	$('#messages').prepend(newNode);
 	newNode.slideDown(1000);
 
 
@@ -96,13 +96,13 @@ socket.on('join_room_response', function(payload){ // Join room response
 
 socket.on('player_disconnected', function(payload){
 
-	if (payload.result === 'fail'){
+	if (payload.result == 'fail'){
 		alert(payload.message);
 		return;
 	}
 
 	// if were are being notified that we left the room, then ignore it
-	if (payload.socket_id === socket.id) {
+	if (payload.socket_id == socket.id){
 		return;
 	}
 
@@ -110,7 +110,7 @@ socket.on('player_disconnected', function(payload){
 	var dom_elements = $('.socket_'+payload.socket_id);
 
 	// is something exists
-	if (dom_elements.length !== 0){
+	if(dom_elements.length  != 0){
 		dom_elements.slideUp(1000);
 	}
 
@@ -159,12 +159,12 @@ function invite(who) { // Invite someone
 
 	/* Do I need to change to \'invite\'payload: */
 
-	console.log('*** Client Log Message: "invite" payload: '+JSON.stringify(payload));
+	console.log('*** Client Log Message: \'invite\' payload: ' +JSON.stringify(payload));
 	socket.emit('invite', payload);
 }
 
 socket.on('invite_response', function(payload){ // invite_response
-	if (payload.result === 'fail'){
+	if (payload.result == 'fail'){
 		alert(payload.message);
 		return;
 	}
@@ -174,7 +174,7 @@ socket.on('invite_response', function(payload){ // invite_response
 
 /*Handle a notification that we have been invited */
 socket.on('invited', function(payload){ // invited
-	if (payload.result === 'fail'){
+	if (payload.result == 'fail'){
 		alert(payload.message);
 		return;
 	}
@@ -257,7 +257,7 @@ socket.on('send_message_response', function(payload){ // Send message response
 	var newHTML = '<p><b>'+payload.username+' says:</b> '+payload.message+'</p>';
 	var newNode = $(newHTML);
 	newNode.hide();
-	$('#messages').append(newNode);
+	$('#messages').prepend(newNode);
 	newNode.slideDown(1000);
 });
 
@@ -388,7 +388,7 @@ socket.on('game_update',function(payload){
 						}
 
 						else{
-							$("#"+row+'_'+column).html('<img src="assets/tokens/error.gif" alt="error"/>');
+							$('#'+row+'_'+column).html('<img src="assets/tokens/error.gif" alt="error" />')
 						}
 					}
 				}
