@@ -43,9 +43,9 @@ var players = [];
 var io = require('socket.io').listen(app);
 
 io.sockets.on('connection', function(socket){
-	
+
 	log('Client connection by ' + socket.id);
-	
+
 	function log(){
 		var array = ['*** Server Log Message: '];
 		for (var i=0; i < arguments.length; i++){
@@ -55,13 +55,13 @@ io.sockets.on('connection', function(socket){
 		socket.emit('log', array);
 		socket.broadcast.emit('log', array);
 	}
-	
 
-	
+
+
 	/* join_room command */
-	/* payload: 
+	/* payload:
 	{
-	 
+
 	 	'room': room to,
 	 	'username' : username of person joining
 	}
@@ -76,14 +76,14 @@ io.sockets.on('connection', function(socket){
 		'result': 'fail',
 		'message' : failure message
 	}
-		
+
 	*/
-	
-	
+
+
 	// Join Room Commnand
 	socket.on('join_room', function(payload){
 		log('\'join_room\' command'+JSON.stringify(payload));
-		
+
 		/* Check that the client sent a payload */
 		if(('undefined' === typeof payload) || !payload){
 		   var error_message = 'join_room had no payload, command aborted';
@@ -94,7 +94,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		/* check that the payload has a room to join */
 		var room = payload.room;
 		if (('undefined' === typeof room) || !room) {
@@ -106,7 +106,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		/* check that a username has been provided */
 		var username = payload.username;
 		if (('undefined' === typeof username) || !username) {
@@ -118,15 +118,15 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		/* Store information about this new player */
 		players[socket.id] = {};
 		players[socket.id].username = username;
 		players[socket.id].room = room;
-		
+
 		/* Actually have the user join the room */
 		socket.join(room);
-		
+
 		/* Get the room object */
 		var roomObject = io.sockets.adapter.rooms[room];
 
@@ -140,7 +140,7 @@ io.sockets.on('connection', function(socket){
 									membership: numClients
 							};
 		io.in(room).emit('join_room_response', success_data);
-		
+
 		for (var socket_in_room in roomObject.sockets) {
 			var success_data = {
 									result: 'success',
@@ -151,16 +151,19 @@ io.sockets.on('connection', function(socket){
 								};
 			socket.emit('join_room_response', success_data);
 		}
-		
+
 		log('join_room success');
-		
+
+		if(room !== 'lobby'){
+				send_game_update(socket,room,'initial update');
+		}
 	});
-	
+
 	// Leave Room
 	socket.on('disconnect', function(){
-		
+
 		log('client disconnected '+JSON.stringify(players[socket.id]));
-		
+
 		if ('undefined' !== typeof players[socket.id] && players[socket.id]) {
 			var username = players[socket.id].username;
 			var room = players[socket.id].room;
@@ -171,13 +174,13 @@ io.sockets.on('connection', function(socket){
 			delete players[socket.id];
 			io.in(room).emit('player_disconnected', payload);
 		}
-		
+
 	});
-	
+
 	/* send_message command */
-	/* payload: 
+	/* payload:
 	{
-	 
+
 	 	'room': room to join,
 	 	'message' : the message to send
 	}
@@ -190,9 +193,9 @@ io.sockets.on('connection', function(socket){
 		'result': 'fail',
 		'message' : failure message
 	}
-	14:45 on video	
+	14:45 on video
 	*/
-	
+
 	socket.on('send_message', function(payload){
 		log('server received a command', 'send_message', payload);
 		if(('undefined' === typeof payload) || !payload){
@@ -204,7 +207,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var room = payload.room;
 		if (('undefined' === typeof room) || !room) {
 			var error_message = 'send_message didn\'t specify a room, command aborted';
@@ -215,7 +218,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var username = players[socket.id].username;
 		if (('undefined' === typeof username) || !username) {
 			var error_message = 'send_message didn\'t specify a username, command aborted';
@@ -226,7 +229,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var message = payload.message;
 		if (('undefined' === typeof message) || !message) {
 			var error_message = 'send_message didn\'t specify a username, command aborted';
@@ -237,7 +240,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var success_data = {
 			result: 'Success',
 			username: username,
@@ -246,12 +249,12 @@ io.sockets.on('connection', function(socket){
 		io.in(room).emit('send_message_response', success_data);
 		log('Message sent to room ' + room + ' by ' + username);
 	});
-	
+
 
 	/* invite command */
-	/* payload: 
+	/* payload:
 	{
-	 
+
 	 	'requested_user': the socket id of the person to be invited
 	}
 	invite_response: {
@@ -270,12 +273,12 @@ io.sockets.on('connection', function(socket){
 		'result': 'success',
 		'socket_id' : failure message
 	}
-	11:15 on video	
+	11:15 on video
 	*/
-	
+
 	socket.on('invite', function(payload){
 		log('invite with ' + JSON.stringify(payload));
-		
+
 		/* Check to make sure that a payload was sent */
 		if(('undefined' === typeof payload) || !payload){
 		   var error_message = 'invite had no payload, command aborted';
@@ -285,8 +288,8 @@ io.sockets.on('connection', function(socket){
 				message: error_message
 			});
 			return;
-		}		
-		
+		}
+
 		/* Check that the message can be traced to a username */
 		var username = players[socket.id].username;
 		if (('undefined' === typeof username) || !username) {
@@ -309,7 +312,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var room = players[socket.id].room;
 		var roomObject = io.sockets.adapter.rooms[room];
 		/* Make sure the user being invited is in the room */
@@ -322,32 +325,32 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		/* If everything is ok respond to the inviter that it was successful */
-		
+
 		var success_data = {
 			result: 'success',
 			socket_id: requested_user
 		};
 		socket.emit('invite_response', success_data);
 
-		
+
 		/* Tell the invitee that they have been invited */
-		
+
 		var success_data = {
 			result: 'success',
 			socket_id: socket.id
 		};
 		socket.to(requested_user).emit('invited', success_data);
-		
+
 		log('invite successful');
 	});
-	
-	
+
+
 		/* uninvite command */
-	/* payload: 
+	/* payload:
 	{
-	 
+
 	 	'requested_user': the socket id of the person to be uninvited
 	}
 	uninvite_response: {
@@ -366,12 +369,12 @@ io.sockets.on('connection', function(socket){
 		'result': 'success',
 		'socket_id' : failure message
 	}
-	05:30 on video	
+	05:30 on video
 	*/
-	
+
 	socket.on('uninvite', function(payload){
 		log('uninvite with ' + JSON.stringify(payload));
-		
+
 		/* Check to make sure that a payload was sent */
 		if(('undefined' === typeof payload) || !payload){
 		   var error_message = 'uninvite had no payload, command aborted';
@@ -381,8 +384,8 @@ io.sockets.on('connection', function(socket){
 				message: error_message
 			});
 			return;
-		}		
-		
+		}
+
 		/* Check that the message can be traced to a username */
 		var username = players[socket.id].username;
 		if (('undefined' === typeof username) || !username) {
@@ -405,15 +408,15 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var room = players[socket.id].room;
 		var roomObject = io.sockets.adapter.rooms[room];
 		/* Make sure the user being invited is in the room */
-		
+
 		if (!roomObject.sockets.hasOwnProperty(requested_user)) {
 			var error_message = 'invite requested a user that wasn\'t in the room, command aborted';
 			log(error_message);
-			
+
 			/*should the below say uninvite_response or invite_response? */
 			socket.emit('uninvite_response', {
 				result: 'fail',
@@ -421,32 +424,32 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		/* If everything is ok respond to the uninviter that it was successful */
-		
+
 		var success_data = {
 			result: 'success',
 			socket_id: requested_user
 		};
 		socket.emit('uninvite_response', success_data);
 
-		
+
 		/* Tell the uninvitee that they have been uninvited */
-		
+
 		var success_data = {
 			result: 'success',
 			socket_id: socket.id
 		};
 		socket.to(requested_user).emit('uninvited', success_data);
-		
+
 		log('uninvite successful');
 	});
 
-	
-			/* game_start command */
-	/* payload: 
+
+	/* game_start command */
+	/* payload:
 	{
-	 
+
 	 	'requested_user': the socket id of the person to play with
 	}
 	game_start_response: {
@@ -459,12 +462,12 @@ io.sockets.on('connection', function(socket){
 		'result': 'fail',
 		'message' : failure message
 	}
-	08:50 on video	
+	08:50 on video
 	*/
-	
+
 	socket.on('game_start', function(payload){
 		log('game_start with ' + JSON.stringify(payload));
-		
+
 		/* Check to make sure that a payload was sent */
 		if(('undefined' === typeof payload) || !payload){
 		   var error_message = 'game_start had no payload, command aborted';
@@ -474,8 +477,8 @@ io.sockets.on('connection', function(socket){
 				message: error_message
 			});
 			return;
-		}		
-		
+		}
+
 		/* Check that the message can be traced to a username */
 		var username = players[socket.id].username;
 		if (('undefined' === typeof username) || !username) {
@@ -498,10 +501,10 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		var room = players[socket.id].room;
 		var roomObject = io.sockets.adapter.rooms[room];
-		
+
 		/* Make sure the user being invited is in the room */
 		if (!roomObject.sockets.hasOwnProperty(requested_user)) {
 			var error_message = 'game_start requested a user that wasn\'t in the room, command aborted';
@@ -512,7 +515,7 @@ io.sockets.on('connection', function(socket){
 			});
 			return;
 		}
-		
+
 		/* If everything is ok respond to the game starter that it was successful */
        /*var game_id = Math.floor((1+Math.random()) * 0x10000.toString(16).substring(1)); */
 		var game_id = Math.floor(1+Math.random() * 0x1000.toString(16).substring());
@@ -523,9 +526,9 @@ io.sockets.on('connection', function(socket){
 		};
 		socket.emit('game_start_response', success_data);
 
-		
+
 		/* Tell the other player to play */
-		
+
 		var success_data = {
 			result: 'success',
 			socket_id: socket.id,
@@ -533,11 +536,64 @@ io.sockets.on('connection', function(socket){
 
 		};
 		socket.to(requested_user).emit('game_start_response', success_data);
-		
+
 		log('game_start successful');
 	});
 
-	
-	
+
+	/*********************************/
+	/* Code related to game state */
+
+var games = {};
+
+function create_new_game(){
+	var new_game = {};
+	new_game.player_white = {};
+	new_game.player_black = {};
+	new_game.player_white.socket = '';
+	new_game.player_white.username = '';
+	new_game.player_black.socket = '';
+	new_game.player_black.username = '';
+
+	var d = new Date();
+	new_game.last_move_time = d.getTime();
+
+	new_game.whose_turn = 'white';
+	new_game.board = [
+										[' ',' ',' ',' ',' ',' ',' ',' '],
+										[' ',' ',' ',' ',' ',' ',' ',' '],
+										[' ',' ',' ',' ',' ',' ',' ',' '],
+										[' ',' ',' ','w','b ',' ',' ',' '],
+										[' ',' ',' ','b','w ',' ',' ',' '],
+										[' ',' ',' ',' ',' ',' ',' ',' '],
+										[' ',' ',' ',' ',' ',' ',' ',' '],
+										[' ',' ',' ',' ',' ',' ',' ',' ']
+										];
+	return new_game;
+}
+
+
+function send_game_update(socket, game_id, message){
+	/* Check to see if game with game_id already exists */
+	if(('undefined' === typeof games[game_id]) || !games[game_id]){
+			/* No game exists, so make one */
+			console.log('No game exists. Creating '+game_id+' for '+socket.id);
+			games[game_id] = create_new_game();
+		}
+
+	/* Make sure that only 2 people are in the game room */
+	/* Assign this socket a color */
+	/* Send game update */
+	var success_data = {
+					result: 'success',
+					game: games[game_id],
+					message: message,
+					game_id: game_id
+					};
+					io.in(game_id).emit('game_update', success_data);
+	/* Check to see if the game is over */
+
+}
+
 
 });
