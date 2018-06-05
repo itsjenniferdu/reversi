@@ -35,7 +35,7 @@
 
     <!-- where new people join from lobby -->
 </div>
-    
+
     <div class='row'>
       <div class='col'>
         <h3>Messages</h3>
@@ -46,11 +46,11 @@
 
     <div class='row'>
       <div class='col'>
-        <form action="" onSubmit='send_message(); return false';>
+        <form class='form-inline' onsubmit='send_message(); return false;'>
 
         <div class='form-group'>
         <label for='send_message_holder' class='col-form-label' sr-only'>Enter your message</label>
-        <input class='form-control' type='text' value='' id='send_message_holder' placeholder='Enter your chat message'/>
+        <input  class='form-control mx-auto w-75' type='text' value='' id='send_message_holder' placeholder='Enter your chat message' autocomplete='off' />
       </div>
       <button type='submit' class='btn btn-default btn-primary'>Send</button>
       </form>
@@ -68,4 +68,4 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js' integrity='sha256-pMea2a/7QK1RhYpSh7rIpKSajxu4j61VmpJCJ31KrfA=' crossorigin='anonymous'></script>
     <script src='js/main.js'></script>
   </body>
-</html>
+      </html>
