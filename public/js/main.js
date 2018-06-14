@@ -331,10 +331,10 @@ socket.on('game_update',function(payload){
 
   if (my_color === 'black'){
 	  $('#my_color').html('<h3 id="my_color">I am a quaffle</h3>');
-	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Elapsed time <span id="elapsed"></span></h4>');
+	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Time-Turner <span id="elapsed"></span></h4>');
   }else{
 	  $('#my_color').html('<h3 id="my_color">I am a keeper</h3>');
-	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Elapsed time <span id="elapsed"></span></h4>');
+	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Time-Turner <span id="elapsed"></span></h4>');
   }
 	
 /*	
