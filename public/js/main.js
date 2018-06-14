@@ -309,10 +309,10 @@ socket.on('game_update',function(payload){
   /* Update my color */
 
   if (socket.id === payload.game.player_white.socket) {
-    my_color = 'keeper';
+    my_color = 'white';
   }
   else if (socket.id === payload.game.player_black.socket) {
-    my_color = 'quaffle';
+    my_color = 'black';
   }
   else {
     // something weird is going on, like three people playing at once
@@ -321,7 +321,6 @@ socket.on('game_update',function(payload){
     return;
   }
 
-	
 	
  var magicalName = ' ';
   if (payload.game.whose_turn === 'black'){
@@ -488,7 +487,15 @@ socket.on('game_over', function (payload) {
  }else{
 	 magicalName = 'sun';
  }	
+  
 	
+  $('#game_over').html('<h1>Game Over</h1><h2>'+magicalName+' won!</h2>');
+  $('#game_over').append('<a href="lobby.html?username='+username+'" class="btn btn-success btn-lg active" role="button" aria-pressed="true"> Return to the Lobby </a>');
+}  );
+
+	/* Jump to a new page, black and white 	
   $('#game_over').html('<h1>Game Over</h1><h2>'+payload.who_won+' won!</h2>');
   $('#game_over').append('<a href="lobby.html?username='+username+'" class="btn btn-success btn-lg active" role="button" aria-pressed="true"> Return to the Lobby </a>');
 }  );
+
+*/
