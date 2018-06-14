@@ -309,10 +309,41 @@ socket.on('game_update',function(payload){
   /* Update my color */
 
   if (socket.id === payload.game.player_white.socket) {
-    my_color = 'keeper';
+    my_color = 'white';
   }
   else if (socket.id === payload.game.player_black.socket) {
-    my_color = 'quaffle';
+    my_color = 'black';
+  }
+  else {
+    // something weird is going on, like three people playing at once
+    // send client back to the lobby
+    window.location.href = 'lobby.html?username=' + username;
+    return;
+  }
+
+	
+	
+ var magicalName = ' ';
+  if (payload.game.whose_turn === 'black'){
+	  magicalName = 'quaffle';
+  }else{
+	  magicalName = 'keeper';
+  }
+
+  if (my_color === 'black'){
+	  $('#my_color').html('<h3 id="my_color">I am a quaffle</h3>');
+	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Elapsed time <span id="elapsed"></span></h4>');
+  }else{
+	  $('#my_color').html('<h3 id="my_color">I am a keeper</h3>');
+	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Elapsed time <span id="elapsed"></span></h4>');
+  }
+	
+/* 
+  if (socket.id === payload.game.player_white.socket) {
+    my_color = 'white';
+  }
+  else if (socket.id === payload.game.player_black.socket) {
+    my_color = 'black';
   }
   else {
     // something weird is going on, like three people playing at once
@@ -324,6 +355,9 @@ socket.on('game_update',function(payload){
   $('#my_color').html('<h3 id="my_color">I am a ' + my_color + '</h3>');
   $('#my_color').append('<h4>It is '+payload.game.whose_turn+'\'s turn. Elapsed time <span id="elapsed"></span></h4>');
 
+*/
+	
+	
   clearInterval(interval_timer);
 interval_timer = setInterval(function(last_time){
   return function(){
