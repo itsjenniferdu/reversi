@@ -483,9 +483,9 @@ socket.on('game_over', function (payload) {
   /* Jump to a new page */
  var magicalName = ' ';
  if (payload.who_won === 'black'){
-	 magicalName = 'moon';
+	 magicalName = 'quaffle';
  }else{
-	 magicalName = 'sun';
+	 magicalName = 'keeper';
  }	
   
 	
