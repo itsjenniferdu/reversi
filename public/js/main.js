@@ -322,7 +322,7 @@ socket.on('game_update',function(payload){
   }
 
 	
-	
+/*	
  var magicalName = ' ';
   if (payload.game.whose_turn === 'black'){
 	  magicalName = 'quaffle';
@@ -337,8 +337,8 @@ socket.on('game_update',function(payload){
 	  $('#my_color').html('<h3 id="my_color">I am a keeper</h3>');
 	  $('#my_color').append('<h4>It is ' + magicalName + '\'s turn. Elapsed time <span id="elapsed"></span></h4>');
   }
-	
-/* 
+*/	
+ 
   if (socket.id === payload.game.player_white.socket) {
     my_color = 'white';
   }
@@ -355,7 +355,7 @@ socket.on('game_update',function(payload){
   $('#my_color').html('<h3 id="my_color">I am a ' + my_color + '</h3>');
   $('#my_color').append('<h4>It is '+payload.game.whose_turn+'\'s turn. Elapsed time <span id="elapsed"></span></h4>');
 
-*/
+
 	
 	
   clearInterval(interval_timer);
