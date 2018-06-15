@@ -490,7 +490,7 @@ socket.on('game_over', function (payload) {
   
 	
   $('#game_over').html('<h1>Game Over</h1><h2>'+magicalName+' won!</h2>');
-  $('#game_over').append('<a href="lobby.html?username='+username+'" class="btn btn-success btn-lg active" role="button" aria-pressed="true"> Return to the Lobby </a>');
+  $('#game_over').append('<a href="lobby.html?username='+username+'" class="btn btn-success btn-lg active" role="button" aria-pressed="true"> Return to the Great Hall </a>');
 }  );
 
 	/* Jump to a new page, black and white 	
